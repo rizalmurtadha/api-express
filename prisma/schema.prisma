@@ -1,0 +1,224 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model df_regional {
+  regional_id BigInt      @id
+  regional    String?
+  df_kantor   df_kantor[]
+}
+
+model df_agama {
+  agama_id BigInt   @id
+  agama    String?
+  df_sdm   df_sdm[]
+}
+
+model df_bagian {
+  bagian_id     BigInt      @id
+  bagian        String?
+  status_bagian String?
+  df_mutasi     df_mutasi[]
+}
+
+model df_jabatan {
+  jabatan_id BigInt      @id
+  jabatan    String?
+  df_mutasi  df_mutasi[]
+}
+
+model df_kantor {
+  nopend                                       String           @id
+  nama_kantor                                  String?
+  kode_level                                   BigInt?
+  singkatan_kelas_kantor                       String?
+  jenis_relasi                                 String?
+  status_aktif                                 String?
+  kprk                                         String?
+  kcu                                          String?
+  Unit_Kerja                                   String?          @map("Unit Kerja")
+  KCU                                          String?
+  kelas_kantor_id                              BigInt?
+  regional_id                                  BigInt?
+  df_kantor_df_kantor_kcuTodf_kantor           df_kantor?       @relation("df_kantor_kcuTodf_kantor", fields: [kcu], references: [nopend], onDelete: NoAction, onUpdate: NoAction)
+  other_df_kantor_df_kantor_kcuTodf_kantor     df_kantor[]      @relation("df_kantor_kcuTodf_kantor")
+  df_kelas_kantor                              df_kelas_kantor? @relation(fields: [kelas_kantor_id], references: [kelas_kantor_id], onDelete: NoAction, onUpdate: NoAction)
+  df_kantor_df_kantor_kprkTodf_kantor          df_kantor?       @relation("df_kantor_kprkTodf_kantor", fields: [kprk], references: [nopend], onDelete: NoAction, onUpdate: NoAction)
+  other_df_kantor_df_kantor_kprkTodf_kantor    df_kantor[]      @relation("df_kantor_kprkTodf_kantor")
+  df_regional                                  df_regional?     @relation(fields: [regional_id], references: [regional_id], onDelete: NoAction, onUpdate: NoAction)
+  df_mutasi_df_mutasi_nopend_asalTodf_kantor   df_mutasi[]      @relation("df_mutasi_nopend_asalTodf_kantor")
+  df_mutasi_df_mutasi_nopend_tujuanTodf_kantor df_mutasi[]      @relation("df_mutasi_nopend_tujuanTodf_kantor")
+}
+
+model df_kategori_durasi {
+  kategori_durasi_id                                                                      BigInt      @id
+  kategori_durasi                                                                         String?
+  df_mutasi_df_mutasi_kategori_durasi_bagian_idTodf_kategori_durasi                       df_mutasi[] @relation("df_mutasi_kategori_durasi_bagian_idTodf_kategori_durasi")
+  df_mutasi_df_mutasi_kategori_durasi_bagian_sebelumnya_idTodf_kategori_durasi            df_mutasi[] @relation("df_mutasi_kategori_durasi_bagian_sebelumnya_idTodf_kategori_durasi")
+  df_mutasi_df_mutasi_kategori_durasi_bagian_unitkerja_idTodf_kategori_durasi             df_mutasi[] @relation("df_mutasi_kategori_durasi_bagian_unitkerja_idTodf_kategori_durasi")
+  df_mutasi_df_mutasi_kategori_durasi_bagian_unitkerja_sebelumnya_idTodf_kategori_durasi  df_mutasi[] @relation("df_mutasi_kategori_durasi_bagian_unitkerja_sebelumnya_idTodf_kategori_durasi")
+  df_mutasi_df_mutasi_kategori_durasi_jabatan_idTodf_kategori_durasi                      df_mutasi[] @relation("df_mutasi_kategori_durasi_jabatan_idTodf_kategori_durasi")
+  df_mutasi_df_mutasi_kategori_durasi_jabatan_sebelumnya_idTodf_kategori_durasi           df_mutasi[] @relation("df_mutasi_kategori_durasi_jabatan_sebelumnya_idTodf_kategori_durasi")
+  df_mutasi_df_mutasi_kategori_durasi_jabatan_unitkerja_idTodf_kategori_durasi            df_mutasi[] @relation("df_mutasi_kategori_durasi_jabatan_unitkerja_idTodf_kategori_durasi")
+  df_mutasi_df_mutasi_kategori_durasi_jabatan_unitkerja_sebelumnya_idTodf_kategori_durasi df_mutasi[] @relation("df_mutasi_kategori_durasi_jabatan_unitkerja_sebelumnya_idTodf_kategori_durasi")
+  df_sdm                                                                                  df_sdm[]
+}
+
+model df_kelas_kantor {
+  kelas_kantor_id BigInt      @id
+  kelas_kantor    String?
+  df_kantor       df_kantor[]
+}
+
+model df_mutasi {
+  mutasi_id                                                                                        BigInt              @id
+  nippos                                                                                           BigInt?
+  noskep                                                                                           String?
+  tgl_skep                                                                                         DateTime?           @db.Timestamp(6)
+  tmt                                                                                              DateTime?           @db.Timestamp(6)
+  tj                                                                                               String?
+  tgl_brgkt                                                                                        DateTime?           @db.Timestamp(6)
+  tgl_aktif                                                                                        DateTime?           @db.Timestamp(6)
+  status                                                                                           BigInt?
+  userid                                                                                           String?
+  tgl_insert                                                                                       String?
+  keterangan                                                                                       String?
+  level_jabatan                                                                                    String?
+  uid_insert                                                                                       String?
+  wkt_update                                                                                       String?
+  uid_update                                                                                       String?
+  rumpun                                                                                           BigInt?
+  tgl_sk                                                                                           DateTime?           @db.Timestamp(6)
+  nomor_sk                                                                                         String?
+  tmt_sk                                                                                           DateTime?           @db.Timestamp(6)
+  rank                                                                                             BigInt?
+  nopend_asal                                                                                      String?
+  nopend_tujuan                                                                                    String?
+  next_tmt                                                                                         DateTime?           @db.Timestamp(6)
+  rank_jabatan                                                                                     BigInt?
+  durasi_jabatan_sebelumnya                                                                        Float?
+  masakerja_jabatan_sebelumnya                                                                     String?
+  rank_bagian                                                                                      BigInt?
+  durasi_bagian_sebelumnya                                                                         Float?
+  masakerja_bagian_sebelumnya                                                                      String?
+  rank_jabatan_unitkerja                                                                           BigInt?
+  durasi_jabatan_unitkerja_sebelumnya                                                              Float?
+  masakerja_jabatan_unitkerja_sebelumnya                                                           String?
+  rank_bagian_unitkerja                                                                            BigInt?
+  durasi_bagian_unitkerja_sebelumnya                                                               Float?
+  masakerja_bagian_unitkerja_sebelumnya                                                            String?
+  tmt_jabatan                                                                                      DateTime?           @db.Timestamp(6)
+  tmt_bagian                                                                                       DateTime?           @db.Timestamp(6)
+  tmt_jabatan_unitkerja                                                                            DateTime?           @db.Timestamp(6)
+  tmt_bagian_unitkerja                                                                             DateTime?           @db.Timestamp(6)
+  durasi_jabatan                                                                                   Float?
+  masakerja_jabatan                                                                                String?
+  durasi_bagian                                                                                    Float?
+  masakerja_bagian                                                                                 String?
+  durasi_jabatan_unitkerja                                                                         Float?
+  masakerja_jabatan_unitkerja                                                                      String?
+  durasi_bagian_unitkerja                                                                          Float?
+  masakerja_bagian_unitkerja                                                                       String?
+  posisi_id                                                                                        BigInt?
+  bagian_id                                                                                        BigInt?
+  jabatan_id                                                                                       BigInt?
+  jenis_mutasi_id                                                                                  BigInt?
+  kategori_durasi_jabatan_sebelumnya_id                                                            BigInt?
+  kategori_durasi_bagian_sebelumnya_id                                                             BigInt?
+  kategori_durasi_jabatan_unitkerja_sebelumnya_id                                                  BigInt?
+  kategori_durasi_bagian_unitkerja_sebelumnya_id                                                   BigInt?
+  kategori_durasi_jabatan_id                                                                       BigInt?
+  kategori_durasi_bagian_id                                                                        BigInt?
+  kategori_durasi_jabatan_unitkerja_id                                                             BigInt?
+  kategori_durasi_bagian_unitkerja_id                                                              BigInt?
+  df_bagian                                                                                        df_bagian?          @relation(fields: [bagian_id], references: [bagian_id], onDelete: NoAction, onUpdate: NoAction)
+  df_jabatan                                                                                       df_jabatan?         @relation(fields: [jabatan_id], references: [jabatan_id], onDelete: NoAction, onUpdate: NoAction)
+  df_jenis_mutasi                                                                                  df_jenis_mutasi?    @relation(fields: [jenis_mutasi_id], references: [jenis_mutasi_id], onDelete: NoAction, onUpdate: NoAction)
+  df_kategori_durasi_df_mutasi_kategori_durasi_bagian_idTodf_kategori_durasi                       df_kategori_durasi? @relation("df_mutasi_kategori_durasi_bagian_idTodf_kategori_durasi", fields: [kategori_durasi_bagian_id], references: [kategori_durasi_id], onDelete: NoAction, onUpdate: NoAction)
+  df_kategori_durasi_df_mutasi_kategori_durasi_bagian_sebelumnya_idTodf_kategori_durasi            df_kategori_durasi? @relation("df_mutasi_kategori_durasi_bagian_sebelumnya_idTodf_kategori_durasi", fields: [kategori_durasi_bagian_sebelumnya_id], references: [kategori_durasi_id], onDelete: NoAction, onUpdate: NoAction)
+  df_kategori_durasi_df_mutasi_kategori_durasi_bagian_unitkerja_idTodf_kategori_durasi             df_kategori_durasi? @relation("df_mutasi_kategori_durasi_bagian_unitkerja_idTodf_kategori_durasi", fields: [kategori_durasi_bagian_unitkerja_id], references: [kategori_durasi_id], onDelete: NoAction, onUpdate: NoAction)
+  df_kategori_durasi_df_mutasi_kategori_durasi_bagian_unitkerja_sebelumnya_idTodf_kategori_durasi  df_kategori_durasi? @relation("df_mutasi_kategori_durasi_bagian_unitkerja_sebelumnya_idTodf_kategori_durasi", fields: [kategori_durasi_bagian_unitkerja_sebelumnya_id], references: [kategori_durasi_id], onDelete: NoAction, onUpdate: NoAction)
+  df_kategori_durasi_df_mutasi_kategori_durasi_jabatan_idTodf_kategori_durasi                      df_kategori_durasi? @relation("df_mutasi_kategori_durasi_jabatan_idTodf_kategori_durasi", fields: [kategori_durasi_jabatan_id], references: [kategori_durasi_id], onDelete: NoAction, onUpdate: NoAction)
+  df_kategori_durasi_df_mutasi_kategori_durasi_jabatan_sebelumnya_idTodf_kategori_durasi           df_kategori_durasi? @relation("df_mutasi_kategori_durasi_jabatan_sebelumnya_idTodf_kategori_durasi", fields: [kategori_durasi_jabatan_sebelumnya_id], references: [kategori_durasi_id], onDelete: NoAction, onUpdate: NoAction)
+  df_kategori_durasi_df_mutasi_kategori_durasi_jabatan_unitkerja_idTodf_kategori_durasi            df_kategori_durasi? @relation("df_mutasi_kategori_durasi_jabatan_unitkerja_idTodf_kategori_durasi", fields: [kategori_durasi_jabatan_unitkerja_id], references: [kategori_durasi_id], onDelete: NoAction, onUpdate: NoAction)
+  df_kategori_durasi_df_mutasi_kategori_durasi_jabatan_unitkerja_sebelumnya_idTodf_kategori_durasi df_kategori_durasi? @relation("df_mutasi_kategori_durasi_jabatan_unitkerja_sebelumnya_idTodf_kategori_durasi", fields: [kategori_durasi_jabatan_unitkerja_sebelumnya_id], references: [kategori_durasi_id], onDelete: NoAction, onUpdate: NoAction)
+  df_sdm                                                                                           df_sdm?             @relation(fields: [nippos], references: [nippos], onDelete: NoAction, onUpdate: NoAction)
+  df_kantor_df_mutasi_nopend_asalTodf_kantor                                                       df_kantor?          @relation("df_mutasi_nopend_asalTodf_kantor", fields: [nopend_asal], references: [nopend], onDelete: NoAction, onUpdate: NoAction)
+  df_kantor_df_mutasi_nopend_tujuanTodf_kantor                                                     df_kantor?          @relation("df_mutasi_nopend_tujuanTodf_kantor", fields: [nopend_tujuan], references: [nopend], onDelete: NoAction, onUpdate: NoAction)
+  df_posisi                                                                                        df_posisi?          @relation(fields: [posisi_id], references: [posisi_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model df_posisi {
+  posisi_id BigInt      @id
+  posisi    String?
+  df_mutasi df_mutasi[]
+}
+
+model df_sdm {
+  nippos                       BigInt              @id
+  nama                         String?
+  tgl_lahir                    DateTime?           @db.Timestamp(6)
+  tempat_lahir                 String?
+  total_grade                  BigInt?
+  suskel                       BigInt?
+  jenis_kelamin                String?
+  tgl_meninggal                DateTime?           @db.Timestamp(6)
+  tgl_disumpah                 DateTime?           @db.Timestamp(6)
+  tgl_kerja                    DateTime?           @db.Timestamp(6)
+  tgl_berhenti                 DateTime?           @db.Timestamp(6)
+  golongan_darah               String?
+  alamat                       String?
+  kota                         String?
+  kodepos                      String?
+  telp                         String?
+  no_urut                      Float?
+  status                       Float?
+  pass                         String?
+  npwp                         String?
+  userid                       String?
+  status_transfer              BigInt?
+  status_kerja_id              BigInt?
+  status_pegawai_id            BigInt?
+  status_nikah_id              BigInt?
+  agama_id                     BigInt?
+  masih_hidup                  String?
+  sudah_berhenti               String?
+  usia                         BigInt?
+  masa_kerja                   String?
+  kategori_durasi_masakerja_id BigInt?
+  df_mutasi                    df_mutasi[]
+  df_agama                     df_agama?           @relation(fields: [agama_id], references: [agama_id], onDelete: NoAction, onUpdate: NoAction)
+  df_kategori_durasi           df_kategori_durasi? @relation(fields: [kategori_durasi_masakerja_id], references: [kategori_durasi_id], onDelete: NoAction, onUpdate: NoAction)
+  df_status_kerja              df_status_kerja?    @relation(fields: [status_kerja_id], references: [status_kerja_id], onDelete: NoAction, onUpdate: NoAction)
+  df_status_nikah              df_status_nikah?    @relation(fields: [status_nikah_id], references: [status_nikah_id], onDelete: NoAction, onUpdate: NoAction)
+  df_status_pegawai            df_status_pegawai?  @relation(fields: [status_pegawai_id], references: [status_pegawai_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model df_status_kerja {
+  status_kerja_id BigInt   @id
+  status_kerja    String?
+  df_sdm          df_sdm[]
+}
+
+model df_status_nikah {
+  status_nikah_id BigInt   @id
+  status_nikah    String?
+  df_sdm          df_sdm[]
+}
+
+model df_status_pegawai {
+  status_pegawai_id BigInt   @id
+  status_pegawai    String?
+  df_sdm            df_sdm[]
+}
+
+model df_jenis_mutasi {
+  jenis_mutasi_id BigInt      @id
+  jenis_mutasi    String?
+  df_mutasi       df_mutasi[]
+}
